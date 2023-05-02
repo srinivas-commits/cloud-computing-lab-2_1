@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Record Management</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+      }
+
+      label {
+        margin-bottom: 10px;
+      }
+
+      input[type="text"] {
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        margin-bottom: 20px;
+        font-size: 16px;
+      }
+
+      button[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #0062cc;
+      }
+
+      #recordOutput {
+        background-color: #f5f5f5;
+        padding: 20px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Record Management</h1>
+    <h2>Create Record</h2>
+    <form id="createRecordForm" onsubmit="createRecord(); return false;">
+      <label for="surname">Surname:</label>
+      <input type="text" id="surname" name="surname" required />
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required />
+      <button type="submit">Create Record</button>
+    </form>
+    <h2>Retrieve Record</h2>
+    <form id="getRecordForm" onsubmit="getRecord(); return false;">
+      <label for="recordId">Record ID:</label>
+      <input type="text" id="recordId" name="recordId" required />
+      <button type="submit">Get Record</button>
+    </form>
+    <h2>Record Output</h2>
+    <div id="recordOutput"></div>
+    <script>
+      function createRecord() {
+        // Retrieve form data
+        const surname = document.getElementById("surname").value;
+        const name = document.getElementById("name").value;
+
+        // Create record object
+        const record = {
+          surname: surname,
+          name: name,
+        };
+
+        // Send POST request to create record
+        fetch("/record", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(record),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Display created record
+            document.getElementById("recordOutput").innerHTML = `
+            <p>Record created with ID ${data.record_id}.</p>
+          `;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+
+      function getRecord() {
+        // Retrieve form data
+        const recordId = document.getElementById("recordId").value;
+        // Send GET request to retrieve record
+        fetch(`/record/${recordId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            // Display retrieved record
+            document.getElementById("recordOutput").innerHTML = `
+          <p>ID: ${data.record_id}</p>
+          <p>Surname: ${data.surname}</p>
+          <p>Name: ${data.name}</p>
+          <p>Date of Creation: ${data.datecreation}</p>
+        `;
+          })
+          .catch((error) => {
+            console.error(error);
+            document.getElementById("recordOutput").innerHTML = `
+          <p>Record not found with ID ${recordId}.</p>
+        `;
+          });
+      }
+    </script>
+  </body>
+</html>
