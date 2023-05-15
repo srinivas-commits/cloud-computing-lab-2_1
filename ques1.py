@@ -62,7 +62,7 @@ class RecordController(Resource):
                 name_xml = ET.SubElement(record_xml, 'name')
                 name_xml.text = record.name
                 datecreation_xml = ET.SubElement(record_xml, 'datecreation')
-                datecreation_xml.text = record.datecreation
+                datecreation_xml.text = str(record.datecreation.isoformat())
                 response = Response(ET.tostring(record_xml), mimetype='application/xml')
             else:
                 try:
@@ -95,4 +95,4 @@ def home():
     return render_template('ques1_1.html')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5100)
+    app.run(debug=True, host='0.0.0.0', port=5000)
