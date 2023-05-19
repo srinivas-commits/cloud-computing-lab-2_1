@@ -25,24 +25,17 @@ spec:
               cpu: 50m
               memory: 64Mi
 ---
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
 metadata:
-  name: myflaskapp-hpa
+  name: myflaskapp-vpa
 spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
+  targetRef:
+    apiVersion: "apps/v1"
     kind: Deployment
     name: myflaskapp
-  minReplicas: 1
-  maxReplicas: 1
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 50
+  updatePolicy:
+    updateMode: "Auto"
 ---
 apiVersion: v1
 kind: Service
